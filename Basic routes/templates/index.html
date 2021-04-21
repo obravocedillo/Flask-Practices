@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+        {% if user.username == 'Oliver' %}
+            <h1>Hello, {{ user.username }}!</h1>
+        {% else %}
+            <h1>Hello new user</h1>
+        {% endif %}
+        <ul>
+            {% for name in names %}
+            <li>{{name.name}}</li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
