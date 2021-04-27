@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+import logging
+from functools import wraps
 from os import environ
 from pymongo import MongoClient
 from functools import wraps
@@ -12,17 +14,17 @@ db = client.SoccerFantasy
 
 numbersArray = []
 
-def get_called(f):
+# A decorator that checks mehtod type and executes a specific function
+def check_get(f):
     @wraps(f)
     def wrap(*args, **kwargs):
-        getWasUsed = False
-        # Check if method was get      
+        # if get us used log 'get used'  
+        getCalled = False 
         if request.method == 'GET':
-            print('Mehtod get was used', flush=True)
-            getWasUsed = True
-        # finally call f. f() now haves access to g.user
+            print('get called', flush=True)
+            getCalled = True         
+        # finally call f. f() now haves access to getCalled
         return f(*args, **kwargs)
-   
     return wrap
 
 # Return a template with basic elements for and if
@@ -33,7 +35,8 @@ def index():
     return render_template('index.html', title='Home', user=user, names=names)
 
 @app.route('/average', methods=['GET'])
-@get_called
+#Call check_get decorator
+@check_get
 def average():
     numbers = request.args.get('numbers')
     formatedNumbers = numbers.split(',')
@@ -51,3 +54,4 @@ def getUsers():
     users = list(db.Users.find({},{'password':0}))
     return json.dumps(users, default=str)
     
+
